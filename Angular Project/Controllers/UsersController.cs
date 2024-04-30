@@ -51,9 +51,6 @@ namespace Angular_Project.Controllers
             {
                 return BadRequest();
             }
-
-           
-
             try
             {
                 repo.Update(user);
@@ -73,9 +70,6 @@ namespace Angular_Project.Controllers
 
             return NoContent();
         }
-
-    
-
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {

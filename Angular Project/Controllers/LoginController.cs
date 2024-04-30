@@ -1,63 +1,4 @@
-﻿//using Microsoft.AspNetCore.Mvc;
-//using Angular_Project.Models;
-//using Angular_Project.Repository;
-//using System.Linq;
-//using Microsoft.IdentityModel.Tokens;
-//using System.Text;
-//using System.IdentityModel.Tokens.Jwt;
-//using System.Security.Claims;
-
-//namespace Angular_Project.Controllers
-//{
-//    [Route("api/[controller]")]
-//    [ApiController]
-//    public class LoginController : ControllerBase
-//    {
-//         GenericRepository<User> userRepository;
-
-//        public LoginController(GenericRepository<User> userRepository)
-//        {
-//            this.userRepository = userRepository;
-//        }
-
-//        [HttpPost]
-//        public IActionResult Login([FromBody] User user)
-//        {
-//            var loggedInUser = userRepository.GetAll().FirstOrDefault(u => u.Email == user.Email && u.Password == user.Password);
-
-//            if (loggedInUser != null)
-//            {
-//                if (loggedInUser.IsAdmin == true)
-//                {
-//                    List<Claim> claims = new List<Claim>();
-//                    claims.Add(new Claim(ClaimTypes.Name, user.Email));
-//                    claims.Add(new Claim(ClaimTypes.Role, "Admin"));
-
-//                    string key ="Angular project Key using real Api Powerd By Shadiii";
-//                    var SecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key));
-//                    var credentials = new SigningCredentials(SecurityKey, SecurityAlgorithms.HmacSha256);
-//                    var token = new JwtSecurityToken(
-//                        claims: claims,
-//                        expires: System.DateTime.Now.AddDays(30),
-//                        signingCredentials: credentials
-//                        );
-//                    return Ok("Admin login successful");
-//                }
-//                else
-//                {
-//                    return Ok("User login successful");
-//                }
-//            }
-//            else
-//            {
-//                return BadRequest("Login failed");
-//            }
-//        }
-//    }
-//}
-
-
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Angular_Project.Models;
 using Angular_Project.Repository;
 using System.Linq;
@@ -80,6 +21,18 @@ namespace Angular_Project.Controllers
             this.userRepository = userRepository;
         }
 
+        public class LoginResponse
+        {
+            public bool Success { get; set; }
+            public string Message { get; set; }
+            public TokenData Data { get; set; }
+        }
+
+        public class TokenData
+        {
+            public string Token { get; set; }
+        }
+
         [HttpPost]
         public IActionResult Login([FromBody] User user)
         {
@@ -89,9 +42,8 @@ namespace Angular_Project.Controllers
             {
                 var claims = new[]
                 {
-                 new Claim(ClaimTypes.Name, user.Email),
-                 new Claim(ClaimTypes.Role, (loggedInUser.IsAdmin ?? false) ? "Admin" : "User")
-
+                    new Claim(ClaimTypes.Name, user.Email),
+                    new Claim(ClaimTypes.Role, (loggedInUser.IsAdmin ?? false) ? "Admin" : "User")
                 };
 
                 // Generate JWT token
@@ -104,18 +56,22 @@ namespace Angular_Project.Controllers
                     signingCredentials: credentials
                 );
 
-                // Return token as response
-                return Ok(new
+                // Return token along with success status and role information
+                return Ok(new LoginResponse
                 {
-                    token = new JwtSecurityTokenHandler().WriteToken(token)
+                    Success = true,
+                    Message = $"Logged in as {(loggedInUser.IsAdmin ?? false ? "admin" : "user")}",
+                    Data = new TokenData
+                    {
+                        Token = new JwtSecurityTokenHandler().WriteToken(token)
+                    }
                 });
             }
             else
             {
-                return BadRequest("Login failed");
+                // Return failure status
+                return BadRequest(new LoginResponse { Success = false, Message = "Login failed" });
             }
         }
     }
 }
-
-

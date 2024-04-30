@@ -24,7 +24,7 @@ namespace Angular_Project.Controllers
 
         // GET: api/Products
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+       
         public  ActionResult<IEnumerable<Product>> GetProducts()
         {
             return repo.GetAll().ToList();
@@ -32,7 +32,7 @@ namespace Angular_Project.Controllers
 
         // GET: api/Products/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "User")]
+      
         public  ActionResult<Product> GetProduct(int id)
         {
             var product =  repo.GetById(id);
@@ -46,9 +46,9 @@ namespace Angular_Project.Controllers
         }
 
         // PUT: api/Products/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public IActionResult PutProduct(int id, Product product)
         {
             if (id != product.Id)
@@ -76,9 +76,8 @@ namespace Angular_Project.Controllers
         }
 
         // POST: api/Products
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult<Product>> PostProduct(Product product)
         {
             repo.Insert(product);
@@ -90,7 +89,7 @@ namespace Angular_Project.Controllers
 
         // DELETE: api/Products/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+      //  [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             var product = repo.GetById(id);

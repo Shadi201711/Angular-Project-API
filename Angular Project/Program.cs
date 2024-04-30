@@ -1,4 +1,3 @@
-
 using Angular_Project.Models;
 using Angular_Project.Repository;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +16,7 @@ namespace Angular_Project
             // Add services to the container.
 
             builder.Services.AddControllers();
-      
+
             builder.Services.AddDbContext<AppleStoreContext>(options =>
                            options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("AppleCon")));
 
@@ -36,8 +35,21 @@ namespace Angular_Project
                     ValidateAudience = false,
                     IssuerSigningKey = SecurityKey
                 };
-            }                                               
-            );
+            });
+
+            // Add CORS configuration
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins",
+                    builder =>
+                    {
+                        builder
+                            .AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader();
+                    });
+            });
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -52,8 +64,9 @@ namespace Angular_Project
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+            app.UseCors("AllowAllOrigins"); // Use CORS middleware
 
+            app.UseAuthorization();
 
             app.MapControllers();
 
