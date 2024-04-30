@@ -43,7 +43,7 @@ namespace Angular_Project.Controllers
                 var claims = new[]
                 {
                     new Claim(ClaimTypes.Name, user.Email),
-                    new Claim(ClaimTypes.Role, (loggedInUser.IsAdmin ?? false) ? "Admin" : "User")
+                    new Claim(ClaimTypes.Role, "User") // Assuming all authenticated users are non-admin
                 };
 
                 // Generate JWT token
@@ -60,7 +60,7 @@ namespace Angular_Project.Controllers
                 return Ok(new LoginResponse
                 {
                     Success = true,
-                    Message = $"Logged in as {(loggedInUser.IsAdmin ?? false ? "admin" : "user")}",
+                    Message = "Logged in as user",
                     Data = new TokenData
                     {
                         Token = new JwtSecurityTokenHandler().WriteToken(token)
