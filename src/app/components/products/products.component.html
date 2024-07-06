@@ -1,0 +1,32 @@
+
+<section class="products text-center">
+  <div class="container">
+    <h3 class="mb-4">Featured Products</h3>
+    <div class="row">
+      <div class="col-sm-6 col-md-3 col-product" *ngFor="let product of products">
+
+        <figure>
+            <img class="rounded-corners img-fluid" src={{product.image}} alt="Product Image" width="240" height="240">
+          <figcaption>
+            <div  class="thumb-overlay"><a  title="More Info">
+              <i  [routerLink]="['/products', product.id]" class="bi bi-search"></i>
+            </a></div>
+          </figcaption>
+        </figure>
+        <h4><a href="#">{{product.name}}</a></h4>
+        <p><span class="emphasis">{{product.price|currency}}</span></p>
+
+        <a [routerLink]="['/products', product.id]" title="More Info" style="margin: 3px;"><i class="bi bi-eye text-warning"></i></a>
+
+
+        <a *ngIf="isAdmin" [routerLink]="['/products', product.id, 'edit']" [hidden]="!isAdmin" title="Edit" style="margin: 3px; "><i class="bi bi-pencil-square text-success"></i></a>
+        <a  *ngIf="isAdmin" (click)="deleteProduct(product.id)" [routerLink]="['/products']" [hidden]="!isAdmin" title="Delete" style="margin: 3px; "><i class="bi bi-trash text-danger"></i></a>
+
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
